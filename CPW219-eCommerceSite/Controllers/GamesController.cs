@@ -66,6 +66,18 @@ namespace CPW219_eCommerceSite.Controllers
             return View(gameToEdit);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Edit(Game gameModel) 
+        {
+            if (ModelState.IsValid) 
+            {
+                _context.Games.Update(gameModel); // Update the gameToEdit in the database. This creates an SQL UPDATE statement, but doesn't execute it yet.
+                await _context.SaveChangesAsync(); // Execute the SQL UPDATE statement. This saves the changes to the database.
+                return RedirectToAction("Index"); // Redirect the user to the Index action.
+            }
+            return View(gameModel);
+
+        }
 
     }
 }
