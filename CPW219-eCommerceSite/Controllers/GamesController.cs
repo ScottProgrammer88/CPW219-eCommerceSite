@@ -30,13 +30,14 @@ namespace CPW219_eCommerceSite.Controllers
         /// <param name="game"></param>
         /// <returns></returns>
         [HttpPost] 
-        public IActionResult Create(Game game) // Model binding, this is a model object representing the game data submitted by the user.
+        public async Task<IActionResult> Create(Game game) // Model binding, this is a model object representing the game data submitted by the user. task is a type of object that represents an asynchronous operation.
         {
             if (ModelState.IsValid)
             {
                 // Add the game to the database
                 _context.Games.Add(game); // Prepare the game to be saved to the database
-                _context.SaveChanges(); // Save the game to the database
+                // For async code information, see https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/async/
+                await _context.SaveChangesAsync(); // Save the game to the database. This is an async operation, so we use the await keyword. Add Async to the end of the method name.
 
                 // show the user a success message
                 ViewData["Message"] = $"{game.Title} was successfully added!";
