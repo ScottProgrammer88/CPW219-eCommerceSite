@@ -1,6 +1,7 @@
 ﻿using CPW219_eCommerceSite.Data;
 using CPW219_eCommerceSite.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 
 namespace CPW219_eCommerceSite.Controllers
@@ -81,5 +82,35 @@ namespace CPW219_eCommerceSite.Controllers
 
         }
 
+        public async Task<IActionResult> Delete(int id)
+        {
+            Game? gameToDelete = await _context.Games.FindAsync(id); // Find the gameToEdit with the specified id
+
+            if (gameToDelete == null) // If the gameToEdit is not found in the database
+            {
+                return NotFound();  // 404 error 
+            }
+
+            return View(gameToDelete);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+
+            Game gameToDelete = await _context.Games.FindAsync(id); // Execute the SQL DELETE statement. This removes the gameToEdit from the database.
+
+            if (gameToDelete != null)
+            {
+                _context.Games.Remove(gameToDelete); // Remove the gameToEdit from the database. This creates an SQL DELETE statement, but doesn't execute it yet.
+                await _context.SaveChangesAsync(); // Execute the SQL DELETE statement. This removes the gameToEdit from the database.
+
+                TempData["Message"] = gameToDelete.Title + " was successfully deleted!";
+                return RedirectToAction("Index"); // Redirect the user to the Index action.
+            }
+
+            TempData["Message"] = "This game was already deleted!";
+            return RedirectToAction("Index"); // had gamtToDelete in here and was causing an error
+        }
     }
 }
