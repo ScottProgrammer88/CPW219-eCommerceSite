@@ -81,7 +81,7 @@ namespace CPW219_eCommerceSite.Data
 //    firstBook.Title = "Animal Farm";
 //    context.SaveChanges();
 
-//    // Delete a book
+//    // DeleteConfirmed a book
 //    context.Books.Remove(firstBook);
 //    context.SaveChanges();
 //}
