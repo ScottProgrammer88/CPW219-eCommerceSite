@@ -109,7 +109,14 @@ namespace CPW219_eCommerceSite.Data
 
         }
 
+
+        /// <summary>
+        /// A DbSet is a collection of entities that represent a table in the database. 
+        /// An entity is a class that represents a table in the database.
+        /// </summary>
         public DbSet<Game> Games { get; set; } // property to represent the table in the database
+
+
         
 
     }
