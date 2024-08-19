@@ -112,5 +112,17 @@ namespace CPW219_eCommerceSite.Controllers
             TempData["Message"] = "This game was already deleted!";
             return RedirectToAction("Index"); // had gamtToDelete in here and was causing an error
         }
+
+        public async Task<IActionResult> Details(int id)
+        {
+            Game? gameDetails = await _context.Games.FindAsync(id); // Find the gameToEdit with the specified id. 
+
+            if (gameDetails == null) // If the gameToEdit is not found in the database
+            {
+                return NotFound();  // 404 error 
+            }
+
+            return View(gameDetails);
+        }
     }
 }
