@@ -7,13 +7,13 @@ namespace CPW219_eCommerceSite.Models
         [Key]
         public int MemberId { get; set; }
         
-        public string Email { get; set; }
+        public string Email { get; set; } = null!; //The exclamation mark (!) indicates that the Email property cannot be null.
 
         public string Password { get; set; }
 
-        public string Phone { get; set; }
+        public string? Phone { get; set; } //The question mark (?) indicates that the Phone property can be null.
 
-        public string Username { get; set; }
+        public string? Username { get; set; }
     }
 
     public class RegisterViewModel  //This class is used to validate the data entered by the user in the registration form, but it does not store the data in the database.
