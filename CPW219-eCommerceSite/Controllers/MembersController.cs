@@ -6,7 +6,7 @@ namespace CPW219_eCommerceSite.Controllers
 {
     public class MembersController : Controller
     {
-        private readonly VideoGameContext _context;
+        private readonly VideoGameContext _context; // This is a private field that holds a reference to the VideoGameContext object. This object is used to interact with the database. Its accessible anywhere in this class.
 
         public MembersController(VideoGameContext context)
         {
@@ -44,6 +44,36 @@ namespace CPW219_eCommerceSite.Controllers
 
             // If the data is not valid, the method will return the Register view with the RegisterViewModel object, which contains the data entered by the user.
             return View(regModel);
+        }
+
+        [HttpGet]
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Login(LoginViewModel loginModel)
+        {
+            if (ModelState.IsValid)
+            {
+                // Check if the email and password match a Member in the database 
+                // _context.Members.FirstOrDefaultAsync(m => m.Email == loginModel.Email && m.Password == loginModel.Password); same as below???
+                Member? m = (from member in _context.Members
+                           where member.Email == loginModel.Email && member.Password == loginModel.Password
+                           select member).SingleOrDefault();
+
+                // If a Member is found, send to Home page
+                if (m != null)
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+                // This method adds an error message to the ModelState object. This message will be displayed in the view if the email and password do not match a Member in the database.
+                ModelState.AddModelError(string.Empty, "Credentials not found");
+            }
+
+            // If the email and password do not match a Member in the database, or ModelState is invalid.
+            return View(loginModel);
         }
     }
 }
