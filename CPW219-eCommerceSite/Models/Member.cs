@@ -38,12 +38,6 @@ namespace CPW219_eCommerceSite.Models
         [DataType(DataType.Password)]
         [Display(Name = "Confirm Password")]
         public string ConfirmPassword { get; set; }
-
-        [Required]
-        public string Phone { get; set; }
-
-        [Required]
-        public string Username { get; set; }
     }
 }
 
