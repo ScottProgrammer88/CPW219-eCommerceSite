@@ -116,8 +116,8 @@ namespace CPW219_eCommerceSite.Data
         /// </summary>
         public DbSet<Game> Games { get; set; } // property to represent the table in the database
 
+        public DbSet<Member> Members { get; set; } // property to represent the table in the database
 
-        
 
     }
 }

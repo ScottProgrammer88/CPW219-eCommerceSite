@@ -61,7 +61,7 @@ namespace CPW219_eCommerceSite.Controllers
 
             if (gameToEdit == null) // If the gameToEdit is not found in the database
             {
-                return NotFound();  // or: RedirectToAction("Index"); Redirect the user to the Index action. 
+                return NotFound();  // or: RedirectToAction("RegisterViewModel"); Redirect the user to the RegisterViewModel action. 
             }
             
             return View(gameToEdit);
@@ -76,7 +76,7 @@ namespace CPW219_eCommerceSite.Controllers
                 await _context.SaveChangesAsync(); // Execute the SQL UPDATE statement. This saves the changes to the database.
 
                 TempData["Message"] = $"{gameModel.Title} was successfully updated!";
-                return RedirectToAction("Index"); // Redirect the user to the Index action.
+                return RedirectToAction("RegisterViewModel"); // Redirect the user to the RegisterViewModel action.
             }
             return View(gameModel);
 
@@ -106,11 +106,23 @@ namespace CPW219_eCommerceSite.Controllers
                 await _context.SaveChangesAsync(); // Execute the SQL DELETE statement. This removes the gameToEdit from the database.
 
                 TempData["Message"] = gameToDelete.Title + " was successfully deleted!";
-                return RedirectToAction("Index"); // Redirect the user to the Index action.
+                return RedirectToAction("RegisterViewModel"); // Redirect the user to the RegisterViewModel action.
             }
 
             TempData["Message"] = "This game was already deleted!";
-            return RedirectToAction("Index"); // had gamtToDelete in here and was causing an error
+            return RedirectToAction("RegisterViewModel"); // had gamtToDelete in here and was causing an error
+        }
+
+        public async Task<IActionResult> Details(int id)
+        {
+            Game? gameDetails = await _context.Games.FindAsync(id); // Find the gameToEdit with the specified id. 
+
+            if (gameDetails == null) // If the gameToEdit is not found in the database
+            {
+                return NotFound();  // 404 error 
+            }
+
+            return View(gameDetails);
         }
     }
 }
