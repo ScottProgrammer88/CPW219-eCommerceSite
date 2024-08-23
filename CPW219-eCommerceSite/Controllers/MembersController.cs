@@ -38,6 +38,8 @@ namespace CPW219_eCommerceSite.Controllers
                 _context.Members.Add(newMember);  // This is the same as INSERT INTO Members (Email, Password) VALUES (regModel.Email, regModel.Password)
                 await _context.SaveChangesAsync();  // This method saves the changes to the database.
 
+                LogUserIn(regModel.Email); // This method stores the email in the session object. This will allow the application to remember the email of the user who is logged in.
+
                 // Finally, the method redirects the user to the Login/Index/Home page.
                 return RedirectToAction("Index", "Home");
             }
@@ -66,7 +68,7 @@ namespace CPW219_eCommerceSite.Controllers
                 // If a Member is found, send to Home page
                 if (m != null)
                 {
-                    HttpContext.Session.SetString("Email", loginModel.Email); // This method stores the email in the session object. This will allow the application to remember the email of the user who is logged in. 
+                    LogUserIn(loginModel.Email); // This method stores the email in the session object. This will allow the application to remember the email of the user who is logged in.
                     return RedirectToAction("Index", "Home");
                 }
                 // This method adds an error message to the ModelState object. This message will be displayed in the view if the email and password do not match a Member in the database.
@@ -75,6 +77,17 @@ namespace CPW219_eCommerceSite.Controllers
 
             // If the email and password do not match a Member in the database, or ModelState is invalid.
             return View(loginModel);
+        }
+
+        private void LogUserIn(string email) // This method stores the email of the logged-in user in the session object. This will allow the application to keep track of the user's login status.
+        {
+            HttpContext.Session.SetString("Email", email);
+        }
+
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear(); // This method clears the session object. This will log the user out of the application.
+            return RedirectToAction("Index", "Home");
         }
     }
 }
