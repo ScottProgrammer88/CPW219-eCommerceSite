@@ -14,9 +14,21 @@ namespace CPW219_eCommerceSite.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? id) // Pass int id as a parameter to the Index method to get the page number from the query string
         {
-            List<Game> games = await _context.Games.ToListAsync(); // Get all games from the database and store them in a list
+            const int NumGamesToDisplayPerPage = 3; // Number of games to display on the home page
+            const int PageOffset = 1; // Page offset for current page number and figuring out how many games to skip
+
+            int currPage = id ?? 1; // Get the current page number from the query string. If the query string is null, set the current page number to 1.
+
+            // Commented out the method syntax version, same code below as query syntax
+            // List<Game> games = await _context.Games.ToListAsync(); // Get all games from the database and store them in a list
+
+            List<Game> games = await (from game in _context.Games
+                                      select game)
+                                      .Skip(NumGamesToDisplayPerPage * (currPage - PageOffset)) // Skip the games that are on previous pages
+                                      .Take(NumGamesToDisplayPerPage) // Take the games for the current page
+                                      .ToListAsync(); // Get the games for the current page
 
             return View(games); // Pass the list of games to the view
         }
