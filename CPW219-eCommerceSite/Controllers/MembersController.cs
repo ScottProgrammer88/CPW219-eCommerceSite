@@ -66,6 +66,7 @@ namespace CPW219_eCommerceSite.Controllers
                 // If a Member is found, send to Home page
                 if (m != null)
                 {
+                    HttpContext.Session.SetString("Email", loginModel.Email); // This method stores the email in the session object. This will allow the application to remember the email of the user who is logged in. 
                     return RedirectToAction("Index", "Home");
                 }
                 // This method adds an error message to the ModelState object. This message will be displayed in the view if the email and password do not match a Member in the database.
