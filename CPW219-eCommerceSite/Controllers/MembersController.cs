@@ -6,7 +6,7 @@ namespace CPW219_eCommerceSite.Controllers
 {
     public class MembersController : Controller
     {
-        private readonly VideoGameContext _context;
+        private readonly VideoGameContext _context; // This is a private field that holds a reference to the VideoGameContext object. This object is used to interact with the database. Its accessible anywhere in this class.
 
         public MembersController(VideoGameContext context)
         {
@@ -38,12 +38,56 @@ namespace CPW219_eCommerceSite.Controllers
                 _context.Members.Add(newMember);  // This is the same as INSERT INTO Members (Email, Password) VALUES (regModel.Email, regModel.Password)
                 await _context.SaveChangesAsync();  // This method saves the changes to the database.
 
+                LogUserIn(regModel.Email); // This method stores the email in the session object. This will allow the application to remember the email of the user who is logged in.
+
                 // Finally, the method redirects the user to the Login/Index/Home page.
                 return RedirectToAction("Index", "Home");
             }
 
             // If the data is not valid, the method will return the Register view with the RegisterViewModel object, which contains the data entered by the user.
             return View(regModel);
+        }
+
+        [HttpGet]
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Login(LoginViewModel loginModel)
+        {
+            if (ModelState.IsValid)
+            {
+                // Check if the email and password match a Member in the database 
+                // _context.Members.FirstOrDefaultAsync(m => m.Email == loginModel.Email && m.Password == loginModel.Password); same as below???
+                Member? m = (from member in _context.Members
+                           where member.Email == loginModel.Email && member.Password == loginModel.Password
+                           select member).SingleOrDefault();
+
+                // If a Member is found, send to Home page
+                if (m != null)
+                {
+                    LogUserIn(loginModel.Email); // This method stores the email in the session object. This will allow the application to remember the email of the user who is logged in.
+                    return RedirectToAction("Index", "Home");
+                }
+                // This method adds an error message to the ModelState object. This message will be displayed in the view if the email and password do not match a Member in the database.
+                ModelState.AddModelError(string.Empty, "Credentials not found");
+            }
+
+            // If the email and password do not match a Member in the database, or ModelState is invalid.
+            return View(loginModel);
+        }
+
+        private void LogUserIn(string email) // This method stores the email of the logged-in user in the session object. This will allow the application to keep track of the user's login status.
+        {
+            HttpContext.Session.SetString("Email", email);
+        }
+
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear(); // This method clears the session object. This will log the user out of the application.
+            return RedirectToAction("Index", "Home");
         }
     }
 }
