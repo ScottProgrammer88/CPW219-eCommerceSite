@@ -14,11 +14,28 @@ namespace CPW219_eCommerceSite.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? id) // Pass int id as a parameter to the Index method to get the page number from the query string
         {
-            List<Game> games = await _context.Games.ToListAsync(); // Get all games from the database and store them in a list
+            const int NumGamesToDisplayPerPage = 3; // Number of games to display on the home page
+            const int PageOffset = 1; // Page offset for current page number and figuring out how many games to skip
 
-            return View(games); // Pass the list of games to the view
+            int currPage = id ?? 1; // Get the current page number from the query string. If the query string is null, set the current page number to 1.
+
+            int totalNumOfProducts = await _context.Games.CountAsync(); // Get the total number of games in the database
+            double maxNumPages = Math.Ceiling((double)totalNumOfProducts / NumGamesToDisplayPerPage); // Calculate the total number of pages
+            int totalPages = Convert.ToInt32(maxNumPages); // Round the total number of pages to the nearest whole number
+
+            // Commented out the method syntax version, same code below as query syntax
+            // List<Game> games = await _context.Games.ToListAsync(); // Get all games from the database and store them in a list
+
+            List<Game> games = await (from game in _context.Games
+                                      select game)
+                                      .Skip(NumGamesToDisplayPerPage * (currPage - PageOffset)) // Skip the games that are on previous pages
+                                      .Take(NumGamesToDisplayPerPage) // Take the games for the current page
+                                      .ToListAsync(); // Get the games for the current page
+
+            GameCatalogViewModel catalogModel = new GameCatalogViewModel(games, totalPages, currPage); // Create a new GameCatalogViewModel object with the list of games, total number of pages, and current page number
+            return View(catalogModel); // Pass the list of games to the view
         }
 
         /// <summary>
