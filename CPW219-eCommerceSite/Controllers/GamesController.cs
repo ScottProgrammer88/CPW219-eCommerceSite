@@ -21,6 +21,10 @@ namespace CPW219_eCommerceSite.Controllers
 
             int currPage = id ?? 1; // Get the current page number from the query string. If the query string is null, set the current page number to 1.
 
+            int totalNumOfProducts = await _context.Games.CountAsync(); // Get the total number of games in the database
+            double maxNumPages = Math.Ceiling((double)totalNumOfProducts / NumGamesToDisplayPerPage); // Calculate the total number of pages
+            int totalPages = Convert.ToInt32(maxNumPages); // Round the total number of pages to the nearest whole number
+
             // Commented out the method syntax version, same code below as query syntax
             // List<Game> games = await _context.Games.ToListAsync(); // Get all games from the database and store them in a list
 
@@ -30,7 +34,8 @@ namespace CPW219_eCommerceSite.Controllers
                                       .Take(NumGamesToDisplayPerPage) // Take the games for the current page
                                       .ToListAsync(); // Get the games for the current page
 
-            return View(games); // Pass the list of games to the view
+            GameCatalogViewModel catalogModel = new GameCatalogViewModel(games, totalPages, currPage); // Create a new GameCatalogViewModel object with the list of games, total number of pages, and current page number
+            return View(catalogModel); // Pass the list of games to the view
         }
 
         /// <summary>
