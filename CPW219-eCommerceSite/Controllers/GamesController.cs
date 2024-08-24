@@ -14,7 +14,7 @@ namespace CPW219_eCommerceSite.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index(int? id) // Pass int id as a parameter to the Index method to get the page number from the query string
+        public async Task<IActionResult> Index(int? id) // Pass int id as a parameter to the Add method to get the page number from the query string
         {
             const int NumGamesToDisplayPerPage = 3; // Number of games to display on the home page
             const int PageOffset = 1; // Page offset for current page number and figuring out how many games to skip
