@@ -27,4 +27,16 @@ namespace CPW219_eCommerceSite.Models
         
         // Todo: Add more properties to the Game class, Add rating, description, etc.
     }
+
+    /// <summary>
+    /// A single video game that has been added to the users shopping cart cookie
+    /// </summary>
+    public class CartGameViewModel
+    {
+        public int GameId { get; set; }
+
+        public string Title { get; set; }
+
+        public double Price { get; set; }
+    }
 }
